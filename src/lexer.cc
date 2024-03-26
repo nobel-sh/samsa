@@ -76,7 +76,7 @@ Lexer::handle_raw_instruction(){
 void
 Lexer::handle_ident(){
       auto start_pos = pos;
-      while (isalnum(peek_token())){
+      while (isalnum(peek_token()) || peek_token()=='_'){
         consume_token();
       }
       std::string str(source.begin() + start_pos, source.begin() + pos);
