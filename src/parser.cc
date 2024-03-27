@@ -8,7 +8,6 @@
 void Parser::consume_token(){
   if (it != tokens.end()){
     it++;
-    pos++;
   }
 }
 
@@ -23,7 +22,7 @@ bool Parser::is_eof(){
   return it == tokens.end();
 }
 
-void Parser::parse(){
+InlineAsm Parser::parse(){
   while (!is_eof()){
     if (peek_token().kind == TokenKind::IDENT){
       parse_ident();
@@ -34,8 +33,9 @@ void Parser::parse(){
     else if (peek_token().kind == TokenKind::COMMA){
       consume_token();
       continue;
-    }else return;
+    }else return asm_node;
   }
+  return asm_node;
 }
 
 void Parser::parse_instruction(){
@@ -51,8 +51,10 @@ void Parser::parse_instruction(){
     consume_token();
   }
   for (auto instr:instrs){
-    std::cout<<"Found instruction: "<< instr << std::endl;
+    // std::cout<<"Found instruction: "<< instr << std::endl;
+    asm_node.templates.push_back(AsmTemplate(instr));
   }
+
 }
 void Parser::parse_ident(){
     std::cout << "Parsing on [Token]: " << peek_token().str << std::endl;
@@ -78,15 +80,47 @@ void Parser::parse_ident(){
 }
 
 void Parser::parse_operand(){
-  auto type = peek_token().str;
+  auto type = operand_type();
+
+  assert(peek_token().kind == TokenKind::LPAREN);
   consume_token();
-  auto reg = parse_register();
+  RegOrClass reg_type;
+  if(peek_token().kind == TokenKind::INSTR){
+    reg_type = RegOrClass::REGISTER;
+  }else{
+    reg_type = RegOrClass::REGISTER_CLASS;
+  }
+  auto reg_name = peek_token().str;
+  // std::cout << reg << std::endl;
+  consume_token();
+  assert(peek_token().kind == TokenKind::RPAREN);
+  consume_token();
+
+  // auto reg = parse_register();
   auto expr = peek_token().str;
   consume_token();
-
-  std::cout << type << " " << expr << std::endl;
+  asm_node.operands.push_back(Operand(type,reg_type,reg_name,expr));
 }
 
+OperandType Parser::operand_type(){
+  assert(peek_token().kind == TokenKind::IDENT);
+  auto dir_spec = peek_token().str;
+  consume_token();
+  if (dir_spec == "in")
+      return OperandType::IN;
+  else if (dir_spec == "out")
+      return OperandType::OUT;
+  else if (dir_spec == "inout")
+      return OperandType::INOUT;
+  else if (dir_spec == "lateout")
+      return OperandType::LATEOUT;
+  else if (dir_spec == "inlateout")
+      return OperandType::INLATEOUT;
+  else{
+      std::cerr << "Unknown dir spec found" << std::endl;
+      exit(1);
+  }
+}
 
 void Parser::parse_options(){
   std::vector <std::string> options;
@@ -110,24 +144,9 @@ void Parser::parse_options(){
       std::cerr << "Illegal Option used" << std::endl;
       exit(-1);
     }
-    std::cout << "Found option: " << it->first << " [Enum]: " << it->second <<std::endl;
+    asm_node.options.push_back(it->second);
+    // std::cout << "Found option: " << it->first << " [Enum]: " << it->second <<std::endl;
   }
-}
-
-AsmRegOrRegClass Parser::parse_register(){
-  assert(peek_token().kind == TokenKind::LPAREN);
-  consume_token();
-  RegOrClass type;
-  if(peek_token().kind == TokenKind::INSTR){
-    type = RegOrClass::REGISTER;
-  }else{
-    type = RegOrClass::REGISTER_CLASS;
-  }
-  auto reg = peek_token().str;
-  consume_token();
-  assert(peek_token().kind == TokenKind::RPAREN);
-  consume_token();
-  return AsmRegOrRegClass(type,reg);
 }
 
 void Parser::parse_clobber_abi(){
@@ -148,6 +167,7 @@ void Parser::parse_clobber_abi(){
   assert(peek_token().kind == TokenKind::RPAREN);
   consume_token();
   for(auto abi:abis){
-    std::cout << "Found ABI: " << abi <<std::endl;
+    // std::cout << "Found ABI: " << abi <<std::endl;
+    asm_node.clobbers.push_back(Clobber(abi));
   }
 }

@@ -1,12 +1,15 @@
 #ifndef AST_H_
 #define AST_H_
 
+#include <sstream>
 #include <string>
 #include <vector>
 #include <iostream>
 #include <unordered_map>
 
-extern std::vector<std::string> allowed_dir_spec;
+static std::vector<std::string> allowed_dir_spec =
+         {"in", "out", "inout", "lateout", "inlateout"};
+
 enum OperandType{
         IN,
         OUT,
@@ -21,32 +24,26 @@ enum RegOrClass{
      REGISTER_CLASS,
 };
 
-class AsmRegOrRegClass{
-public:
-    RegOrClass type;
-    //NOTE: Only explicit registers for now
-    std::string name;
-    AsmRegOrRegClass(RegOrClass t, std::string &n)
-      : type(t), name(n)
-    {}
-};
-
 class Operand{
 public:
-    OperandType type;
-    std::string reg_name;
-    std::string expr; // expression it holds
-    Operand(std::string &reg_name, std::string &expr, OperandType type)
-      : reg_name(reg_name), expr(expr), type(type){}
-    void dump();
+  OperandType type;
+  RegOrClass reg_type;
+  std::string reg_name;
+  std::string expr; // string of expression it holds for now
+  Operand( OperandType type, RegOrClass reg_type,
+           std::string &reg_name, std::string &expr)
+    : reg_name(reg_name), reg_type(reg_type),
+      expr(expr), type(type){}
+  void dump();
 };
 
 // raw strings only for now
 class AsmTemplate{
 public:
-    std::string asm_str;
-    AsmTemplate(std::string &&asm_str)
-      : asm_str(asm_str) {}
+  std::string asm_str;
+  AsmTemplate(std::string &asm_str)
+    : asm_str(asm_str) {}
+  void dump();
 };
 
 enum InlineAsmOption{
@@ -62,7 +59,7 @@ enum InlineAsmOption{
   UNKNOWN,
 };
 
-static std::unordered_map<std::string,InlineAsmOption> options_map = {
+static std::unordered_map<std::string, InlineAsmOption> options_map = {
   {"pure", InlineAsmOption::PURE},
   {"nomem", InlineAsmOption::NOMEM},
   {"readonly", InlineAsmOption::READONLY},
@@ -74,25 +71,39 @@ static std::unordered_map<std::string,InlineAsmOption> options_map = {
   {"may_unwind", InlineAsmOption::MAY_UNWIND},
 };
 
+static std::unordered_map<InlineAsmOption, std::string> options_to_string = {
+  {InlineAsmOption::PURE, "pure" },
+  {InlineAsmOption::NOMEM, "nomem"} ,
+  {InlineAsmOption::READONLY, "readonly" },
+  {InlineAsmOption::PRESERVES_FLAGS, "preserved_flags"},
+  {InlineAsmOption::NORETURN, "noreturn"},
+  {InlineAsmOption::NOSTACK, "nostack"},
+  {InlineAsmOption::ATT_SYNTAX, "att_syntax"},
+  {InlineAsmOption::RAW, "raw"},
+  {InlineAsmOption::MAY_UNWIND, "may_unwind"},
+};
+
 
 class Clobber{
-    std::string clobber;
-    Clobber(std::string &&clobber)
+  std::string clobber;
+public:
+  Clobber(std::string &clobber)
       : clobber (clobber) {}
+  void dump();
 };
 
 class InlineAsm{
 public:
-    std::vector<AsmTemplate> templates;
-    std::vector<InlineAsmOption> options;
-    std::vector<Operand> operands;
-    Clobber clobbers;
-
-    InlineAsm(std::vector<AsmTemplate> t, std::vector<InlineAsmOption> o,
-              std::vector<Operand> op, Clobber c)
-      : templates(t), options(o), operands(op), clobbers(c){}
+  std::vector<AsmTemplate> templates;
+  std::vector<InlineAsmOption> options;
+  std::vector<Operand> operands;
+  std::vector<Clobber> clobbers;
+  InlineAsm(std::vector<AsmTemplate> t, std::vector<InlineAsmOption> o,
+            std::vector<Operand> op, std::vector<Clobber> c)
+    : templates(t), options(o), operands(op), clobbers(c){}
+  InlineAsm(){}
+  void dump();
 };
 
 
-
-#endif // AST_H_
+#endif //AST_H_

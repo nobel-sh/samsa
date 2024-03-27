@@ -7,25 +7,31 @@
 
 
 class Parser{
-public:
-  Parser(Lexer l) : tokens(l.tokens) {}
+private:
+  std::vector<Token> tokens;
+  InlineAsm asm_node;
 
-  void parse();
   void parse_instruction();
   void parse_operand();
   void parse_options();
   void parse_ident();
-  AsmRegOrRegClass parse_register();
+  // AsmRegOrRegClass parse_register();
   void parse_clobber_abi();
+
   void consume_token();
   Token peek_token();
   bool is_eof();
+  OperandType operand_type();
 
-  private:
-  std::vector<Token> tokens;
+public:
+  Parser(Lexer l) : tokens(l.tokens) {}
+  InlineAsm parse();
+  void dump(){
+    asm_node.dump();
+  }
+private:
   std::vector<Token>::iterator it = tokens.begin();
-
-  unsigned int pos = 0;
+  // unsigned int pos = 0;
 };
 
 
