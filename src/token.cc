@@ -1,20 +1,24 @@
 #include "token.h"
 
-void
-Token::dump() {
-    std::cout << "Token {" << std::endl;
-    std::cout << "\tkind: " << to_string(kind) << std::endl;
-    std::cout << "\tpos: " << pos << std::endl;
-    std::cout << "\tLexeme: " << str << std::endl;
-    std::cout << "}" << std::endl;
+void Token::dump()
+{
+  std::cout << "Token {" << std::endl;
+  std::cout << "\tkind: " << to_string(kind) << std::endl;
+  std::cout << "\tpos: " << pos << std::endl;
+  std::cout << "\tLexeme: " << str << std::endl;
+  std::cout << "}" << std::endl;
 }
 
 std::string
-Token::to_string(TokenKind kind){
-  auto it =  token_string.find(kind);
-  if (it != token_string.end()){
+Token::to_string(TokenKind kind)
+{
+  auto it = token_string.find(kind);
+  if (it != token_string.end())
+  {
     return it->second;
-  }else{
+  }
+  else
+  {
     std::cerr << "Unknown token given for token to string map\n";
   }
   return "Unknown Token";

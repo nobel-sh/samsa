@@ -8,7 +8,8 @@
 #include <memory>
 #include <vector>
 
-class Lexer {
+class Lexer
+{
 public:
   Lexer(std::vector<char> source) : source(source), pos(0) {}
 
@@ -16,7 +17,7 @@ public:
   void lex();
   std::vector<Token> tokens;
 
-  private:
+private:
   std::vector<char> source;
   int pos;
 
@@ -25,11 +26,9 @@ public:
   void handle_raw_instruction();
   void handle_ident();
 
-
   unsigned char peek_token();
   unsigned char peek_token(int nth);
   void consume_token();
   void consume_token(int n);
-
 };
 #endif

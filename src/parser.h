@@ -5,8 +5,8 @@
 #include "token.h"
 #include "lexer.h"
 
-
-class Parser{
+class Parser
+{
 private:
   std::vector<Token> tokens;
   InlineAsm asm_node;
@@ -26,13 +26,14 @@ private:
 public:
   Parser(Lexer l) : tokens(l.tokens) {}
   InlineAsm parse();
-  void dump(){
+  void dump()
+  {
     asm_node.dump();
   }
+
 private:
   std::vector<Token>::iterator it = tokens.begin();
   // unsigned int pos = 0;
 };
-
 
 #endif // PARSER_H_

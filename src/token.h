@@ -5,7 +5,8 @@
 #include <memory>
 #include <map>
 
-enum TokenKind {
+enum TokenKind
+{
   IDENT,
   BANG,
   LPAREN,
@@ -18,33 +19,43 @@ enum TokenKind {
   ENDOFFILE,
 };
 
-
-class Token {
+class Token
+{
 public:
-    Token(unsigned int pos, TokenKind kind, std::string &&str)
+  Token(unsigned int pos, TokenKind kind, std::string &&str)
       : pos(pos), kind(kind), str(str) {}
 
-    void dump();
-    std::string to_string(TokenKind kind);
+  void dump();
+  std::string to_string(TokenKind kind);
 
-		TokenKind kind;
-		std::string str;
+  TokenKind kind;
+  std::string str;
+
 private:
-		unsigned int pos;
+  unsigned int pos;
 
-		std::map<TokenKind, std::string> token_string = {
-      {TokenKind::IDENT,  "IDENT"},
-      {TokenKind::BANG,   "BANG"},
-      {TokenKind::LPAREN, "LPAREN",},
-      {TokenKind::RPAREN, "RPAREN",},
-      {TokenKind::EQUALS, "EQUALS",},
+  std::map<TokenKind, std::string> token_string = {
+      {TokenKind::IDENT, "IDENT"},
+      {TokenKind::BANG, "BANG"},
+      {
+          TokenKind::LPAREN,
+          "LPAREN",
+      },
+      {
+          TokenKind::RPAREN,
+          "RPAREN",
+      },
+      {
+          TokenKind::EQUALS,
+          "EQUALS",
+      },
       {TokenKind::LBRACE, "LBRACE,"},
       {TokenKind::RBRACE, "RBRACE,"},
-      {TokenKind::INSTR,  "INSTR,"},
-      {TokenKind::COMMA,  "COMMA"},
+      {TokenKind::INSTR, "INSTR,"},
+      {TokenKind::COMMA, "COMMA"},
       {TokenKind::ENDOFFILE, "ENDOFFILE"},
 
-    };
+  };
 };
 
 #endif // TOKEN_H_
