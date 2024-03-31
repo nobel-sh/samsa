@@ -16,6 +16,7 @@ enum TokenKind
   RBRACE,
   INSTR,
   COMMA,
+  UNDERSCORE,
   ENDOFFILE,
 };
 

@@ -41,6 +41,10 @@ void Lexer::lex()
       tokens.push_back(
           Token(pos, TokenKind::EQUALS, "="));
       break;
+    case '_':
+      tokens.push_back(
+          Token(pos, TokenKind::UNDERSCORE, "_"));
+      break;
     case '"':
       handle_raw_instruction();
       continue;
