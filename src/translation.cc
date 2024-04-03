@@ -226,12 +226,19 @@ bool isStringDigit(const std::string &str)
 void GCCInline::dump()
 {
     std::cout << "Templates: \n";
+    auto count = templated_strs.size();
     for (auto x : templated_strs)
     {
-        std::cout << "\t\"" << x << "\"" << std::endl;
+        std::cout << "\t\"" << x << "\"";
+        if (count > 1)
+        {
+            std::cout << ",";
+            count--;
+        }
+        std::cout << std::endl;
     }
 
-    auto count = output_operands.size();
+    count = output_operands.size();
     std::cout << "Output Operands: ";
     for (auto x : output_operands)
     {

@@ -21,8 +21,8 @@ int main(void)
   // parser.dump();
   // std::cout << "Validating AST" << std::endl;
   validate_ast(ast);
-  std::cout << "Translating AST to extended GCC inline assembly node" << std::endl;
-  std::cout << "GCC Inline Assembly:" << std::endl;
+  // std::cout << "Translating AST to extended GCC inline assembly node" << std::endl;
+  std::cout << "GCC Inline Assembly Node:" << std::endl;
   print_translated_node(ast).dump();
   return 0;
 }
