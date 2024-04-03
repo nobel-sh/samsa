@@ -19,7 +19,12 @@ void validate_ast(InlineAsm &node)
 
 void validate_clobber_abis(InlineAsm &node)
 {
-    //
+    //TODO: Implement this
+}
+
+void validate_template(InlineAsm &node)
+{
+    //TODO: Implement this
 }
 
 void validate_options(InlineAsm &node)
@@ -59,5 +64,5 @@ void validate_options(InlineAsm &node)
 
 void validate_registers(InlineAsm &node)
 {
-    //
+    //TODO: Implement this
 }

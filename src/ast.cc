@@ -34,3 +34,16 @@ void InlineAsm::dump()
     std::cout << it->second << std::endl;
   }
 }
+
+
+// should actually check for the name `foo` in foo = bar(bazz) _; 
+// this function just here as a placeholder
+
+int InlineAsm::find_reg_index(std::string &s){
+  for (int i = 0; i < operands.size(); i++){
+    if (operands[i].reg_name == s){ 
+      return i;
+    }
+  }
+  return -1;
+}

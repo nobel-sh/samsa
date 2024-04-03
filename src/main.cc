@@ -2,23 +2,27 @@
 #include "parser.h"
 #include "validation.h"
 #include "translation.h"
+#include <fstream>
 
 int main(void)
 {
-  std::string s = "block { asm! (\"mov {} 5\", out(reg) x)}";
-  std::string s2 = "asm! (\"mov {} 5\", out(reg) x)";
-  std::string s3 = "\"mov {} 4\",\"test instr\",inout(reg_abcd) x, in (\"eax\") y, out(reg_abcd) k, option(pure,nomem),clobber_abi(\"C\",\"test\")";
-  std::vector<char> v(s3.begin(), s3.end());
+  std::string filename = "test";
+  std::ifstream file(filename);
+  std::string asm_str((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+                 
+  std::vector<char> v(asm_str.begin(), asm_str.end());
   Lexer lexer(v);
   lexer.lex();
-  std::cout << s3 << std::endl;
+  // lexer.dump();
   Parser parser(lexer);
   auto ast = parser.parse();
-  std::cout << "Dumping AST" << std::endl;
-  parser.dump();
-  std::cout << "Validating AST" << std::endl;
+  // std::cout << "Dumping AST" << std::endl;
+  // parser.dump();
+  // std::cout << "Validating AST" << std::endl;
   validate_ast(ast);
-  std::cout << "Translating AST" << std::endl;
+  std::cout << "Translating AST to extended GCC inline assembly node" << std::endl;
+  std::cout << "GCC Inline Assembly:" << std::endl;
   print_translated_node(ast).dump();
   return 0;
 }

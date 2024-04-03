@@ -29,6 +29,13 @@ bool Parser::is_eof()
 
 InlineAsm Parser::parse()
 {
+  assert(peek_token().kind == TokenKind::IDENT && peek_token().str == "asm");
+  consume_token();
+  assert(peek_token().kind == TokenKind::BANG);
+  consume_token();
+  assert(peek_token().kind == TokenKind::LPAREN);
+  consume_token();
+
   while (!is_eof())
   {
     if (peek_token().kind == TokenKind::IDENT)
@@ -37,7 +44,6 @@ InlineAsm Parser::parse()
     }
     else if (peek_token().kind == TokenKind::INSTR)
     {
-      std::cout << "parsing instructions" << std::endl;
       parse_instruction();
     }
     else if (peek_token().kind == TokenKind::COMMA)
@@ -74,7 +80,7 @@ void Parser::parse_instruction()
 }
 void Parser::parse_ident()
 {
-  std::cout << "Parsing on [Token]: " << peek_token().str << std::endl;
+  // std::cout << "Parsing on [Token]: " << peek_token().str << std::endl;
   auto is_valid_dir_spec =
       std::find(allowed_dir_spec.begin(),
                 allowed_dir_spec.end(),

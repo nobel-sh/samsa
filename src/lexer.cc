@@ -56,7 +56,9 @@ void Lexer::lex()
       }
       else
       {
-        std::cerr << "Unknown token found at: " << pos << std::endl;
+        // there are better ways to handle this. just suppressing error for now
+        // std::cerr << "Unknown token found at: " << pos << std::endl;
+        // std::cerr << "Token is: " << curr_char << std::endl;
       }
       break;
     }

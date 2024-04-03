@@ -111,6 +111,7 @@ public:
       : templates(t), options(o), operands(op), clobbers(c) {}
   InlineAsm() {}
   void dump();
+  int find_reg_index(std::string &s);
 };
 
 #endif // AST_H_
